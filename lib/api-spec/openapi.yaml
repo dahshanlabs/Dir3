@@ -3,20 +3,31 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Dir3 / درع — AI Security Platform API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: playground
+    description: Playground attack testing
+  - name: shield
+    description: Shield generator
+  - name: scanner
+    description: Compliance scanner
+  - name: leaderboard
+    description: Public leaderboard
+  - name: attacks
+    description: Attack library
+  - name: stats
+    description: Platform statistics
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +35,218 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /attacks:
+    get:
+      operationId: getAttacks
+      tags: [attacks]
+      summary: Get all attacks from attack library
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: language
+          in: query
+          schema:
+            type: string
+        - name: severity
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of attacks
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AttacksResponse"
+
+  /playground/run:
+    post:
+      operationId: runPlayground
+      tags: [playground]
+      summary: Run attack tests against a system prompt
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PlaygroundRunRequest"
+      responses:
+        "200":
+          description: Run started
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlaygroundRunStarted"
+
+  /playground/runs/{shareId}:
+    get:
+      operationId: getPlaygroundRun
+      tags: [playground]
+      summary: Get a playground run by share ID
+      parameters:
+        - name: shareId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Playground run details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlaygroundRun"
+        "404":
+          description: Run not found
+
+  /playground/recent:
+    get:
+      operationId: getRecentRuns
+      tags: [playground]
+      summary: Get recent public playground runs
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        "200":
+          description: Recent runs
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecentRunsResponse"
+
+  /shield/generate:
+    post:
+      operationId: generateShield
+      tags: [shield]
+      summary: Harden a system prompt
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ShieldGenerateRequest"
+      responses:
+        "200":
+          description: Hardened prompt result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShieldGenerateResponse"
+
+  /scanner/run:
+    post:
+      operationId: runScanner
+      tags: [scanner]
+      summary: Run compliance scan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ScannerRunRequest"
+      responses:
+        "200":
+          description: Scan started
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ScannerRunStarted"
+
+  /scanner/scans/{scanId}:
+    get:
+      operationId: getScan
+      tags: [scanner]
+      summary: Get scan results
+      parameters:
+        - name: scanId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Scan details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ScanResult"
+
+  /leaderboard:
+    get:
+      operationId: getLeaderboard
+      tags: [leaderboard]
+      summary: Get public leaderboard
+      responses:
+        "200":
+          description: Leaderboard data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LeaderboardResponse"
+
+  /leaderboard/models/{modelId}/history:
+    get:
+      operationId: getModelHistory
+      tags: [leaderboard]
+      summary: Get score history for a model
+      parameters:
+        - name: modelId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: days
+          in: query
+          schema:
+            type: integer
+            default: 30
+      responses:
+        "200":
+          description: Model history
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ModelHistoryResponse"
+
+  /stats:
+    get:
+      operationId: getStats
+      tags: [stats]
+      summary: Get platform statistics
+      responses:
+        "200":
+          description: Platform stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlatformStats"
+
+  /detect:
+    post:
+      operationId: detectText
+      tags: [attacks]
+      summary: Run detection engine on a text snippet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DetectRequest"
+      responses:
+        "200":
+          description: Detection result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DetectResponse"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +257,492 @@ components:
       required:
         - status
 
+    Attack:
+      type: object
+      properties:
+        id:
+          type: string
+        payload:
+          type: string
+        category:
+          type: string
+        subcategory:
+          type: string
+        severity:
+          type: string
+          enum: [low, medium, high, critical]
+        language:
+          type: string
+          enum: [ar, en, mixed]
+        description_ar:
+          type: string
+        description_en:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        is_premium:
+          type: boolean
+        is_open_source:
+          type: boolean
+      required:
+        - id
+        - payload
+        - category
+        - severity
+        - language
+        - description_ar
+        - description_en
+
+    AttacksResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+        attacks:
+          type: array
+          items:
+            $ref: "#/components/schemas/Attack"
+      required:
+        - total
+        - attacks
+
+    PlaygroundRunRequest:
+      type: object
+      properties:
+        system_prompt:
+          type: string
+        categories:
+          type: array
+          items:
+            type: string
+        language_filter:
+          type: string
+          enum: [all, ar, en]
+          default: all
+        max_attacks:
+          type: integer
+          default: 20
+      required:
+        - system_prompt
+
+    PlaygroundRunStarted:
+      type: object
+      properties:
+        run_id:
+          type: string
+        share_id:
+          type: string
+        total_attacks:
+          type: integer
+        status:
+          type: string
+      required:
+        - run_id
+        - share_id
+        - total_attacks
+        - status
+
+    AttackResult:
+      type: object
+      properties:
+        attack_id:
+          type: string
+        attack_payload:
+          type: string
+        attack_category:
+          type: string
+        attack_severity:
+          type: string
+        attack_language:
+          type: string
+        attack_description_en:
+          type: string
+        attack_description_ar:
+          type: string
+        succeeded:
+          type: boolean
+        judge_confidence:
+          type: number
+        judge_reasoning:
+          type: string
+      required:
+        - attack_id
+        - attack_payload
+        - attack_category
+        - attack_severity
+        - attack_language
+        - attack_description_en
+        - attack_description_ar
+        - succeeded
+
+    PlaygroundRun:
+      type: object
+      properties:
+        id:
+          type: string
+        share_id:
+          type: string
+        system_prompt:
+          type: string
+        status:
+          type: string
+          enum: [running, complete, failed]
+        hardness_score:
+          type: number
+        attacks_resisted:
+          type: integer
+        attacks_failed:
+          type: integer
+        total_attacks:
+          type: integer
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/AttackResult"
+        category_breakdown:
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              total:
+                type: integer
+              resisted:
+                type: integer
+              score:
+                type: number
+        started_at:
+          type: string
+        completed_at:
+          type: string
+      required:
+        - id
+        - share_id
+        - status
+        - total_attacks
+
+    RecentRunsResponse:
+      type: object
+      properties:
+        runs:
+          type: array
+          items:
+            type: object
+            properties:
+              share_id:
+                type: string
+              hardness_score:
+                type: number
+              total_attacks:
+                type: integer
+              attacks_resisted:
+                type: integer
+              started_at:
+                type: string
+            required:
+              - share_id
+              - total_attacks
+              - started_at
+      required:
+        - runs
+
+    ShieldGenerateRequest:
+      type: object
+      properties:
+        input_prompt:
+          type: string
+        level:
+          type: string
+          enum: [light, standard, paranoid]
+          default: standard
+        domain:
+          type: string
+        languages_to_defend:
+          type: array
+          items:
+            type: string
+      required:
+        - input_prompt
+
+    ShieldGenerateResponse:
+      type: object
+      properties:
+        shield_id:
+          type: string
+        input_prompt:
+          type: string
+        output_prompt:
+          type: string
+        techniques_applied:
+          type: array
+          items:
+            type: string
+        categories_now_resisted:
+          type: array
+          items:
+            type: string
+        estimated_score_improvement:
+          type: integer
+        diff_summary_en:
+          type: string
+        diff_summary_ar:
+          type: string
+      required:
+        - shield_id
+        - input_prompt
+        - output_prompt
+        - techniques_applied
+        - categories_now_resisted
+
+    ScannerRunRequest:
+      type: object
+      properties:
+        input_type:
+          type: string
+          enum: [system_prompt, conversation, privacy_policy]
+          default: system_prompt
+        system_prompt:
+          type: string
+        frameworks:
+          type: array
+          items:
+            type: string
+          default: [pdpl, nca_ecc]
+        domain:
+          type: string
+      required:
+        - system_prompt
+
+    ScannerRunStarted:
+      type: object
+      properties:
+        scan_id:
+          type: string
+        status:
+          type: string
+      required:
+        - scan_id
+        - status
+
+    ScanFinding:
+      type: object
+      properties:
+        id:
+          type: string
+        framework:
+          type: string
+        article_id:
+          type: string
+        article_number:
+          type: string
+        title_ar:
+          type: string
+        title_en:
+          type: string
+        severity:
+          type: string
+          enum: [low, medium, high, critical]
+        finding_en:
+          type: string
+        finding_ar:
+          type: string
+        remediation_en:
+          type: string
+        remediation_ar:
+          type: string
+      required:
+        - id
+        - framework
+        - article_id
+        - severity
+        - title_en
+        - finding_en
+
+    ScanResult:
+      type: object
+      properties:
+        scan_id:
+          type: string
+        status:
+          type: string
+          enum: [running, complete, failed]
+        overall_score:
+          type: integer
+        framework_scores:
+          type: object
+          additionalProperties:
+            type: integer
+        findings:
+          type: array
+          items:
+            $ref: "#/components/schemas/ScanFinding"
+        started_at:
+          type: string
+        completed_at:
+          type: string
+      required:
+        - scan_id
+        - status
+
+    LeaderboardEntry:
+      type: object
+      properties:
+        model_id:
+          type: string
+        display_name:
+          type: string
+        provider:
+          type: string
+        is_arabic_native:
+          type: boolean
+        scores:
+          type: object
+          properties:
+            overall:
+              type: integer
+            arabic:
+              type: integer
+            english:
+              type: integer
+            pii_protection:
+              type: integer
+            injection_resistance:
+              type: integer
+            topic_adherence:
+              type: integer
+          required:
+            - overall
+            - arabic
+            - english
+            - pii_protection
+            - injection_resistance
+            - topic_adherence
+        rank:
+          type: integer
+        rank_change_7d:
+          type: integer
+        attacks_run:
+          type: integer
+        run_date:
+          type: string
+      required:
+        - model_id
+        - display_name
+        - provider
+        - scores
+        - rank
+        - attacks_run
+        - run_date
+
+    LeaderboardResponse:
+      type: object
+      properties:
+        as_of:
+          type: string
+        models:
+          type: array
+          items:
+            $ref: "#/components/schemas/LeaderboardEntry"
+      required:
+        - as_of
+        - models
+
+    ModelHistoryEntry:
+      type: object
+      properties:
+        run_date:
+          type: string
+        overall_score:
+          type: integer
+        arabic_score:
+          type: integer
+        english_score:
+          type: integer
+      required:
+        - run_date
+        - overall_score
+        - arabic_score
+        - english_score
+
+    ModelHistoryResponse:
+      type: object
+      properties:
+        model_id:
+          type: string
+        history:
+          type: array
+          items:
+            $ref: "#/components/schemas/ModelHistoryEntry"
+      required:
+        - model_id
+        - history
+
+    PlatformStats:
+      type: object
+      properties:
+        total_runs:
+          type: integer
+        total_attacks_executed:
+          type: integer
+        models_evaluated:
+          type: integer
+        attack_library_size:
+          type: integer
+        open_source_attacks:
+          type: integer
+      required:
+        - total_runs
+        - total_attacks_executed
+        - models_evaluated
+        - attack_library_size
+        - open_source_attacks
+
+    DetectRequest:
+      type: object
+      properties:
+        text:
+          type: string
+        language:
+          type: string
+          enum: [ar, en, auto]
+          default: auto
+      required:
+        - text
+
+    DetectResponse:
+      type: object
+      properties:
+        is_injection:
+          type: boolean
+        has_pii:
+          type: boolean
+        has_unicode_attack:
+          type: boolean
+        detections:
+          type: array
+          items:
+            type: object
+            properties:
+              category:
+                type: string
+              severity:
+                type: string
+              confidence:
+                type: number
+              description:
+                type: string
+            required:
+              - category
+              - severity
+              - confidence
+              - description
+        overall_risk:
+          type: string
+          enum: [none, low, medium, high, critical]
+      required:
+        - is_injection
+        - has_pii
+        - has_unicode_attack
+        - detections
+        - overall_risk
