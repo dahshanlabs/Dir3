@@ -1,0 +1,422 @@
+{
+  "metadata": {
+    "framework": "NCA Essential Cybersecurity Controls",
+    "version": "ECC-2:2024",
+    "regulator": "National Cybersecurity Authority (NCA), Kingdom of Saudi Arabia",
+    "source_url": "https://nca.gov.sa/en/regulatory-documents/controls-list/ecc/",
+    "source_pdf": "https://cdn.nca.gov.sa/api/files/public/upload/86e09090-44e4-481f-bc28-355673607654_ECC--2024-EN.pdf",
+    "structure": {
+      "main_domains": 5,
+      "subdomains": 29,
+      "total_controls": 114
+    },
+    "main_domains_list": [
+      "Cybersecurity Governance",
+      "Cybersecurity Defense",
+      "Cybersecurity Resilience",
+      "Third-Party and Cloud Computing Cybersecurity",
+      "Industrial Control Systems Cybersecurity"
+    ],
+    "description": "Controls selected for AI/LLM relevance — these are the subdomains and controls Dir3 evaluates AI deployments against. The full ECC has 114 controls; we focus on those most likely triggered by LLM/AI systems. Not all controls apply to every AI deployment — applicability depends on the entity type and use case.",
+    "last_updated": "2026-05-02"
+  },
+  "controls": [
+    {
+      "id": "nca-ecc.2-2",
+      "framework": "nca_ecc",
+      "domain": "Cybersecurity Defense",
+      "domain_number": 2,
+      "subdomain_number": "2-2",
+      "subdomain_title_ar": "إدارة الهوية والوصول",
+      "subdomain_title_en": "Identity and Access Management",
+      "ai_relevance": "AI APIs (e.g., Dir3 Proxy customers' applications) must implement strong authentication, MFA for admin access, role-based access control, and secure key management. API keys for LLM access require lifecycle management.",
+      "key_requirements_ar": [
+        "مصادقة قوية للوصول إلى أنظمة AI",
+        "MFA للحسابات الإدارية",
+        "إدارة دورة حياة مفاتيح API",
+        "ضوابط الوصول حسب الدور (RBAC)",
+        "مراجعة دورية لصلاحيات الوصول"
+      ],
+      "key_requirements_en": [
+        "Strong authentication to AI systems",
+        "MFA for administrative accounts",
+        "API key lifecycle management",
+        "Role-based access control (RBAC)",
+        "Periodic access rights review"
+      ],
+      "detection_rules": [
+        "Check if MFA is enforced for admin accounts",
+        "Check if API keys have rotation policy",
+        "Check if least-privilege principle is applied",
+        "Check for shared/generic accounts (anti-pattern)"
+      ],
+      "common_violations_ar": [
+        "مفاتيح API لا تنتهي صلاحيتها",
+        "لا يوجد MFA على لوحة التحكم",
+        "صلاحيات وصول مفتوحة لجميع الموظفين"
+      ],
+      "common_violations_en": [
+        "API keys never expire",
+        "No MFA on admin console",
+        "Open access permissions for all staff"
+      ]
+    },
+    {
+      "id": "nca-ecc.2-7",
+      "framework": "nca_ecc",
+      "domain": "Cybersecurity Defense",
+      "domain_number": 2,
+      "subdomain_number": "2-7",
+      "subdomain_title_ar": "حماية البيانات والمعلومات",
+      "subdomain_title_en": "Data and Information Protection",
+      "ai_relevance": "Critical for AI: classification of data fed to/from LLMs, data leakage prevention, redaction of sensitive content, and secure handling throughout the AI pipeline.",
+      "key_requirements_ar": [
+        "تصنيف البيانات المُدخلة للـAI",
+        "منع تسرب البيانات (DLP)",
+        "إخفاء/تنقيح المعلومات الحساسة",
+        "معالجة آمنة للبيانات في pipeline الـAI",
+        "ضوابط على إخراج البيانات من النموذج"
+      ],
+      "key_requirements_en": [
+        "Classification of data fed to AI",
+        "Data Loss Prevention (DLP)",
+        "Redaction of sensitive information",
+        "Secure processing in AI pipeline",
+        "Output controls on model responses"
+      ],
+      "detection_rules": [
+        "PII redaction must be in place before logging",
+        "DLP scanning must be applied to AI outputs",
+        "Sensitive data classification must guide AI handling",
+        "Sample conversations should not contain unredacted PII"
+      ],
+      "common_violations_ar": [
+        "logs الـAI تحتوي PII غير منقّحة",
+        "لا يوجد تصنيف للبيانات قبل إرسالها للنموذج",
+        "النموذج يكشف بيانات حساسة في الإجابات"
+      ],
+      "common_violations_en": [
+        "AI logs contain unredacted PII",
+        "No data classification before sending to model",
+        "Model leaks sensitive data in responses"
+      ]
+    },
+    {
+      "id": "nca-ecc.2-8",
+      "framework": "nca_ecc",
+      "domain": "Cybersecurity Defense",
+      "domain_number": 2,
+      "subdomain_number": "2-8",
+      "subdomain_title_ar": "التشفير",
+      "subdomain_title_en": "Cryptography",
+      "ai_relevance": "AI systems must encrypt data in transit (TLS to LLM endpoints) and at rest (audit logs, conversation history, API keys). Strong cryptographic standards required.",
+      "key_requirements_ar": [
+        "تشفير البيانات أثناء النقل (TLS 1.3+)",
+        "تشفير البيانات المخزنة (AES-256)",
+        "إدارة آمنة لمفاتيح التشفير",
+        "تشفير مفاتيح API في قاعدة البيانات (Argon2id hashing)",
+        "استخدام معايير تشفير معتمدة"
+      ],
+      "key_requirements_en": [
+        "Encryption in transit (TLS 1.3+)",
+        "Encryption at rest (AES-256)",
+        "Secure cryptographic key management",
+        "API keys hashed in database (Argon2id)",
+        "Use of approved cryptographic standards"
+      ],
+      "detection_rules": [
+        "All API endpoints must use HTTPS",
+        "Database encryption at rest must be enabled",
+        "API keys must be hashed, not stored plaintext",
+        "Cryptographic libraries must be up to date"
+      ],
+      "common_violations_ar": [
+        "نقل البيانات عبر HTTP غير مشفر",
+        "تخزين مفاتيح API كنص عادي",
+        "استخدام خوارزميات تشفير قديمة"
+      ],
+      "common_violations_en": [
+        "Data transferred over unencrypted HTTP",
+        "API keys stored in plaintext",
+        "Use of outdated cryptographic algorithms"
+      ]
+    },
+    {
+      "id": "nca-ecc.2-12",
+      "framework": "nca_ecc",
+      "domain": "Cybersecurity Defense",
+      "domain_number": 2,
+      "subdomain_number": "2-12",
+      "subdomain_title_ar": "إدارة سجلات الأحداث ومراقبة الأمن السيبراني",
+      "subdomain_title_en": "Cybersecurity Event Logs and Monitoring Management",
+      "ai_relevance": "AI systems must log all security-relevant events: authentication, blocked requests, detected attacks, PII redactions, anomalous behavior. Logs must be retained, monitored, and tamper-evident. Dir3 Proxy's audit_log is designed for this.",
+      "key_requirements_ar": [
+        "تسجيل شامل للأحداث الأمنية",
+        "حماية السجلات من التعديل",
+        "احتفاظ بالسجلات لمدة لا تقل عن 12 شهراً",
+        "مراقبة فورية للأحداث الحرجة",
+        "تنبيهات تلقائية للأنماط المشبوهة"
+      ],
+      "key_requirements_en": [
+        "Comprehensive logging of security events",
+        "Tamper-evident log storage",
+        "Log retention minimum 12 months",
+        "Real-time monitoring of critical events",
+        "Automated alerts for suspicious patterns"
+      ],
+      "detection_rules": [
+        "Audit log must capture: auth events, blocks, PII detections, errors",
+        "Log retention period must meet 12-month minimum",
+        "Logs must be append-only or cryptographically signed",
+        "Alert workflow must trigger on high-severity events"
+      ],
+      "common_violations_ar": [
+        "لا توجد سجلات للأحداث",
+        "السجلات تُحذف قبل 12 شهر",
+        "لا يوجد نظام تنبيه للأحداث الحرجة"
+      ],
+      "common_violations_en": [
+        "No event logs exist",
+        "Logs deleted before 12 months",
+        "No alerting system for critical events"
+      ]
+    },
+    {
+      "id": "nca-ecc.2-13",
+      "framework": "nca_ecc",
+      "domain": "Cybersecurity Defense",
+      "domain_number": 2,
+      "subdomain_number": "2-13",
+      "subdomain_title_ar": "إدارة الحوادث والتهديدات السيبرانية",
+      "subdomain_title_en": "Cybersecurity Incident and Threat Management",
+      "ai_relevance": "AI systems must have incident response procedures for: data leakage via prompt injection, model abuse, API key compromise, mass exfiltration attempts. Detection, response, and recovery workflows required.",
+      "key_requirements_ar": [
+        "خطة الاستجابة للحوادث الموثقة",
+        "اكتشاف الحوادث في الوقت الفعلي",
+        "إجراءات الاحتواء والاستئصال",
+        "تحليل ما بعد الحادث",
+        "تكامل مع أنظمة المراقبة"
+      ],
+      "key_requirements_en": [
+        "Documented incident response plan",
+        "Real-time incident detection",
+        "Containment and eradication procedures",
+        "Post-incident analysis",
+        "Integration with monitoring systems"
+      ],
+      "detection_rules": [
+        "Incident response plan must exist and be tested",
+        "Detection capabilities for AI-specific threats (prompt injection, mass exfiltration)",
+        "Webhook integration for incident escalation",
+        "Communication plan for affected stakeholders"
+      ],
+      "common_violations_ar": [
+        "لا توجد خطة استجابة للحوادث",
+        "لا يوجد كشف لـprompt injection attacks",
+        "تأخر الاستجابة للحوادث"
+      ],
+      "common_violations_en": [
+        "No incident response plan",
+        "No detection for prompt injection attacks",
+        "Delayed incident response"
+      ]
+    },
+    {
+      "id": "nca-ecc.2-15",
+      "framework": "nca_ecc",
+      "domain": "Cybersecurity Defense",
+      "domain_number": 2,
+      "subdomain_number": "2-15",
+      "subdomain_title_ar": "أمن تطبيقات الويب",
+      "subdomain_title_en": "Web Application Security",
+      "ai_relevance": "AI APIs are web applications. They must follow OWASP Top 10 for traditional web threats AND OWASP Top 10 for LLMs (prompt injection, training data poisoning, output handling). Dir3 specifically addresses LLM-specific web security.",
+      "key_requirements_ar": [
+        "حماية ضد OWASP Top 10",
+        "حماية ضد OWASP LLM Top 10 (إضافي للـAI)",
+        "اختبارات أمان منتظمة",
+        "WAF أو حماية مكافئة",
+        "حماية ضد حقن التعليمات (prompt injection)"
+      ],
+      "key_requirements_en": [
+        "Protection against OWASP Top 10",
+        "Protection against OWASP LLM Top 10",
+        "Regular security testing",
+        "WAF or equivalent protection",
+        "Prompt injection defense"
+      ],
+      "detection_rules": [
+        "Standard web security headers (HSTS, CSP, etc.) must be set",
+        "Rate limiting must be in place",
+        "Input validation against injection",
+        "LLM-specific: prompt injection detection (Dir3 provides)",
+        "LLM-specific: output sanitization for PII"
+      ],
+      "common_violations_ar": [
+        "لا توجد حماية ضد prompt injection",
+        "لا يوجد rate limiting",
+        "غياب headers الأمان الأساسية"
+      ],
+      "common_violations_en": [
+        "No prompt injection protection",
+        "No rate limiting",
+        "Missing basic security headers"
+      ]
+    },
+    {
+      "id": "nca-ecc.4-1",
+      "framework": "nca_ecc",
+      "domain": "Third-Party and Cloud Computing Cybersecurity",
+      "domain_number": 4,
+      "subdomain_number": "4-1",
+      "subdomain_title_ar": "الأمن السيبراني للأطراف الخارجية",
+      "subdomain_title_en": "Third-Party Cybersecurity",
+      "ai_relevance": "CRITICAL for AI: using foreign LLM providers (OpenAI, Anthropic, Google) means relying on third parties for processing. ECC requires: vendor risk assessment, contractual cybersecurity obligations, monitoring of third-party security posture, NDA clauses.",
+      "key_requirements_ar": [
+        "تقييم مخاطر مزودي LLM",
+        "اتفاقيات تعاقدية للأمن السيبراني",
+        "بنود NDA مع الأطراف الخارجية",
+        "مراقبة دورية لوضع الأمن لدى المزود",
+        "خطة الخروج في حالة فسخ العقد"
+      ],
+      "key_requirements_en": [
+        "Risk assessment of LLM providers",
+        "Contractual cybersecurity obligations",
+        "NDA clauses with third parties",
+        "Periodic monitoring of provider security posture",
+        "Exit plan in case of contract termination"
+      ],
+      "detection_rules": [
+        "DPA / cybersecurity agreement must exist with each LLM provider",
+        "Vendor risk assessment documented",
+        "Provider security certifications verified (SOC 2, ISO 27001)",
+        "Termination procedures defined"
+      ],
+      "common_violations_ar": [
+        "استخدام LLM بدون عقد رسمي",
+        "لا يوجد تقييم مخاطر للمزود",
+        "غياب خطة الخروج"
+      ],
+      "common_violations_en": [
+        "LLM use without formal contract",
+        "No vendor risk assessment",
+        "No exit plan defined"
+      ]
+    },
+    {
+      "id": "nca-ecc.4-2",
+      "framework": "nca_ecc",
+      "domain": "Third-Party and Cloud Computing Cybersecurity",
+      "domain_number": 4,
+      "subdomain_number": "4-2",
+      "subdomain_title_ar": "الأمن السيبراني للحوسبة السحابية والاستضافة",
+      "subdomain_title_en": "Cloud Computing and Hosting Cybersecurity",
+      "ai_relevance": "CRITICAL: ECC mandates cloud cybersecurity managed service centers be conducted exclusively in the Kingdom for sensitive contexts. AI deployments using foreign cloud (AWS US, Azure US) need careful evaluation. Saudi-hosted alternatives (e.g., Saudi Cloud) recommended for sensitive workloads.",
+      "key_requirements_ar": [
+        "اعتماد ضوابط الحوسبة السحابية الخاصة بالـNCA",
+        "إدارة الخدمات السحابية الحساسة من داخل المملكة",
+        "تقييم البلد المستضيف",
+        "ضوابط فصل البيانات في البيئات السحابية المشتركة",
+        "حماية بيانات العملاء في multi-tenancy"
+      ],
+      "key_requirements_en": [
+        "Adopt NCA Cloud Computing Cybersecurity Controls (CCC)",
+        "Sensitive cloud services managed from within KSA",
+        "Hosting country assessment",
+        "Data segregation controls in shared cloud environments",
+        "Customer data protection in multi-tenancy"
+      ],
+      "detection_rules": [
+        "If sensitive data: hosting region must be assessed",
+        "Cloud provider compliance with KSA-specific requirements",
+        "Tenant isolation guarantees",
+        "Region-specific data residency configuration"
+      ],
+      "common_violations_ar": [
+        "استضافة بيانات حساسة خارج المملكة بدون تقييم",
+        "غياب ضوابط فصل البيانات",
+        "عدم تطبيق ضوابط NCA CCC"
+      ],
+      "common_violations_en": [
+        "Sensitive data hosted outside KSA without assessment",
+        "Missing data segregation controls",
+        "NCA CCC not applied"
+      ]
+    },
+    {
+      "id": "nca-ecc.2-10",
+      "framework": "nca_ecc",
+      "domain": "Cybersecurity Defense",
+      "domain_number": 2,
+      "subdomain_number": "2-10",
+      "subdomain_title_ar": "إدارة الثغرات",
+      "subdomain_title_en": "Vulnerabilities Management",
+      "ai_relevance": "AI systems require continuous vulnerability assessment including LLM-specific issues: prompt injection susceptibility, training data leaks, jailbreak resistance. Dir3 Playground provides this assessment capability.",
+      "key_requirements_ar": [
+        "فحص الثغرات الدوري",
+        "اختبار مقاومة LLM للهجمات",
+        "إصلاح الثغرات حسب الأولوية",
+        "تتبع CVEs ذات الصلة"
+      ],
+      "key_requirements_en": [
+        "Periodic vulnerability scanning",
+        "LLM attack resistance testing",
+        "Prioritized vulnerability remediation",
+        "Tracking relevant CVEs"
+      ],
+      "detection_rules": [
+        "Vulnerability scanning schedule must exist",
+        "LLM-specific testing (using tools like Dir3 Playground) must be performed",
+        "Remediation SLAs must be defined",
+        "Process for emerging AI threats"
+      ],
+      "common_violations_ar": [
+        "لا توجد اختبارات أمان للـLLM",
+        "غياب جدول فحص الثغرات",
+        "تأخر إصلاح الثغرات الحرجة"
+      ],
+      "common_violations_en": [
+        "No LLM security testing",
+        "No vulnerability scanning schedule",
+        "Delayed remediation of critical vulnerabilities"
+      ]
+    },
+    {
+      "id": "nca-ecc.2-11",
+      "framework": "nca_ecc",
+      "domain": "Cybersecurity Defense",
+      "domain_number": 2,
+      "subdomain_number": "2-11",
+      "subdomain_title_ar": "اختبار الاختراق",
+      "subdomain_title_en": "Penetration Testing",
+      "ai_relevance": "Annual penetration testing required. For AI systems, this should include LLM red-teaming: prompt injection campaigns, jailbreak attempts, data exfiltration tests. Dir3 provides automated testing for ongoing coverage between annual pentests.",
+      "key_requirements_ar": [
+        "اختبار اختراق سنوي على الأقل",
+        "اختبارات red-team للـAI",
+        "تقارير شاملة بالنتائج",
+        "خطة معالجة للنتائج"
+      ],
+      "key_requirements_en": [
+        "Annual penetration testing minimum",
+        "AI red-team exercises",
+        "Comprehensive findings reports",
+        "Remediation plan for findings"
+      ],
+      "detection_rules": [
+        "Annual pentest must be documented",
+        "AI red-team must include prompt injection, jailbreaks, data exfiltration",
+        "Critical findings must have remediation timeline",
+        "Pentest scope must include AI components"
+      ],
+      "common_violations_ar": [
+        "لا يوجد اختبار اختراق سنوي",
+        "نطاق الاختبار لا يشمل الـAI",
+        "النتائج لا تُعالج"
+      ],
+      "common_violations_en": [
+        "No annual penetration test",
+        "Test scope excludes AI components",
+        "Findings not remediated"
+      ]
+    }
+  ]
+}

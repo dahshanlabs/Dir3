@@ -1,0 +1,301 @@
+{
+  "metadata": {
+    "framework": "Saudi Personal Data Protection Law (PDPL)",
+    "law_version": "PDPL-2023",
+    "effective_date": "2024-09-14",
+    "regulator": "Saudi Data and Artificial Intelligence Authority (SDAIA)",
+    "source_url": "https://sdaia.gov.sa/en/Research/Pages/DataProtection.aspx",
+    "implementing_regulation_url": "https://istitlaa.ncc.gov.sa/ar/transportation/ndmo/implementingpdpl/Documents/PDPL%20Implementing%20Regulation.pdf",
+    "description": "Articles selected for AI relevance — these are the 10 articles Dir3 evaluates AI systems against in the Compliance Scanner. Full PDPL has 43 articles; we focus on those most likely to be triggered by LLM/AI deployments.",
+    "last_updated": "2026-05-02",
+    "compliance_levels": ["compliant", "partial", "non_compliant", "not_applicable"]
+  },
+  "articles": [
+    {
+      "id": "pdpl.art.4",
+      "framework": "pdpl",
+      "article_number": "Article 4",
+      "title_ar": "حقوق صاحب البيانات الشخصية",
+      "title_en": "Data Subject Rights",
+      "text_ar": "يحق لصاحب البيانات الشخصية ممارسة الحقوق الآتية وفقاً للضوابط والإجراءات المحددة في اللائحة التنفيذية: 1) الحق في معرفة الأساس النظامي والغرض من جمع بياناته. 2) الحق في الحصول على بياناته الشخصية. 3) الحق في طلب تصحيح بياناته أو استكمالها أو تحديثها. 4) الحق في طلب إتلاف بياناته الشخصية.",
+      "text_en": "The Data Subject has the following rights, in accordance with the controls and procedures specified in the Implementing Regulations: (1) Right to be informed of the legal basis and purpose of collection. (2) Right to access their personal data. (3) Right to request correction, completion, or updating of their data. (4) Right to request destruction of their personal data.",
+      "ai_relevance": "AI systems that hold or process personal data must support all four rights. System prompts should include explicit handling for: erasure requests, access requests, correction requests, and explanations of why/how data is collected. AI must not refuse to acknowledge these rights even if it cannot fulfill them directly.",
+      "detection_rules": [
+        "System prompt should mention data subject rights handling",
+        "System prompt should specify routing for deletion/access/correction requests",
+        "AI should not store user PII beyond session unless explicitly authorized",
+        "AI should provide clear explanation of data flow when asked"
+      ],
+      "common_violations_ar": [
+        "النظام لا يوفر آلية لطلب حذف البيانات",
+        "النظام يخزن بيانات شخصية بدون إعلام المستخدم",
+        "النظام يرفض الكشف عن سبب جمع البيانات"
+      ],
+      "common_violations_en": [
+        "System provides no mechanism to request data deletion",
+        "System stores personal data without user notification",
+        "System refuses to disclose purpose of data collection"
+      ],
+      "remediation_template_ar": "أضف في الـsystem prompt: 'إذا طلب المستخدم حذف بياناته أو الوصول إليها أو تصحيحها، أرشده إلى [قناة الدعم] وأكد أن طلبه سيُعالج خلال [مدة]'",
+      "remediation_template_en": "Add to system prompt: 'If user requests data deletion, access, or correction, route them to [support channel] and confirm their request will be processed within [timeframe]'"
+    },
+    {
+      "id": "pdpl.art.5",
+      "framework": "pdpl",
+      "article_number": "Article 5",
+      "title_ar": "الأساس النظامي لمعالجة البيانات الشخصية",
+      "title_en": "Lawful Basis for Processing",
+      "text_ar": "يجب أن يكون لدى جهة التحكم أساس نظامي واضح لمعالجة البيانات الشخصية، ويُعدّ من ذلك: موافقة صاحب البيانات، أو ضرورة المعالجة لتنفيذ عقد، أو ضرورتها لحماية مصلحة حيوية، أو لأغراض المصلحة المشروعة.",
+      "text_en": "The Controller must have a clear lawful basis for processing personal data, including: consent of the data subject, contractual necessity, vital interest protection, or legitimate interest purposes.",
+      "ai_relevance": "AI deployments must establish lawful basis for any personal data processing. For consent-based processing, the AI should not collect data beyond what consent covers. For contract-based processing, it must stay within scope of the contract.",
+      "detection_rules": [
+        "Lawful basis must be documented per processing activity",
+        "AI should not infer data beyond stated lawful basis",
+        "Consent flows in AI conversations must be explicit, not implied",
+        "AI should refuse to use data for purposes outside lawful basis"
+      ],
+      "common_violations_ar": [
+        "النظام يجمع بيانات بدون أساس نظامي محدد",
+        "النظام يستخدم البيانات لأغراض غير المصرّح بها",
+        "لا يوجد توثيق لقاعدة الأساس النظامي"
+      ],
+      "common_violations_en": [
+        "System collects data without specified lawful basis",
+        "System uses data for unauthorized purposes",
+        "No documentation of lawful basis exists"
+      ],
+      "remediation_template_ar": "حدد بوضوح الأساس النظامي في وثيقة المعالجة، وأضف في الـsystem prompt تذكيراً بألا يطلب المساعد بيانات خارج نطاق الأساس النظامي",
+      "remediation_template_en": "Clearly specify lawful basis in processing documentation, and add reminder to system prompt that the assistant should not request data outside the lawful basis scope"
+    },
+    {
+      "id": "pdpl.art.6",
+      "framework": "pdpl",
+      "article_number": "Article 6",
+      "title_ar": "الموافقة",
+      "title_en": "Consent",
+      "text_ar": "يجب أن تكون موافقة صاحب البيانات الشخصية صريحة ومُحددة ومستنيرة وحرة، ويحق له سحب موافقته في أي وقت.",
+      "text_en": "The Data Subject's consent must be explicit, specific, informed, and freely given. The Data Subject may withdraw consent at any time.",
+      "ai_relevance": "When AI conversations involve consent collection (e.g., chatbots requesting personal info), consent must be explicit and informed. AI should never 'trick' users into providing data through conversational framing.",
+      "detection_rules": [
+        "Consent requests must be in plain language",
+        "Consent must be specific to the purpose",
+        "AI must support consent withdrawal mid-conversation",
+        "Pre-checked consent boxes are non-compliant",
+        "Consent must be obtained before data collection, not after"
+      ],
+      "common_violations_ar": [
+        "النظام يجمع بيانات قبل أخذ الموافقة",
+        "نص الموافقة غير واضح أو غامض",
+        "لا توجد آلية لسحب الموافقة"
+      ],
+      "common_violations_en": [
+        "System collects data before obtaining consent",
+        "Consent language is vague or unclear",
+        "No mechanism to withdraw consent exists"
+      ],
+      "remediation_template_ar": "أضف للنظام: 'قبل جمع أي بيانات شخصية، اطلب موافقة صريحة بصياغة واضحة. إذا سحب المستخدم موافقته، توقف فوراً عن استخدام بياناته'",
+      "remediation_template_en": "Add to system: 'Before collecting any personal data, obtain explicit consent in clear language. If the user withdraws consent, immediately stop using their data'"
+    },
+    {
+      "id": "pdpl.art.11",
+      "framework": "pdpl",
+      "article_number": "Article 11",
+      "title_ar": "تحديد الغرض من المعالجة",
+      "title_en": "Purpose Limitation",
+      "text_ar": "يجب أن يكون الغرض من جمع البيانات الشخصية مرتبطاً مباشرة بأغراض جهة التحكم وألا يتعارض مع أي حكم نظامي.",
+      "text_en": "The purpose of collecting personal data must be directly related to the Controller's purposes and must not conflict with any legal provision.",
+      "ai_relevance": "AI assistants should only collect data relevant to their stated purpose. A banking AI shouldn't ask for medical info; a customer service AI shouldn't profile users for marketing without separate consent.",
+      "detection_rules": [
+        "AI scope must align with stated purpose in privacy notice",
+        "Data collected must be minimal and relevant",
+        "Cross-purpose use of data requires renewed consent",
+        "AI should refuse to collect data outside purpose scope"
+      ],
+      "common_violations_ar": [
+        "النظام يجمع بيانات أكثر من اللازم للغرض",
+        "البيانات تُستخدم في أغراض ثانوية بدون موافقة",
+        "نطاق المساعد أوسع من الغرض المُعلن"
+      ],
+      "common_violations_en": [
+        "System collects more data than necessary for purpose",
+        "Data used for secondary purposes without consent",
+        "Assistant scope exceeds stated purpose"
+      ],
+      "remediation_template_ar": "ضيّق نطاق المساعد ليتطابق مع الغرض المُعلن، وأضف قاعدة: 'لا تطلب بيانات غير ضرورية للغرض المحدد'",
+      "remediation_template_en": "Narrow assistant scope to match stated purpose, and add rule: 'Do not request data unnecessary for the specified purpose'"
+    },
+    {
+      "id": "pdpl.art.14",
+      "framework": "pdpl",
+      "article_number": "Article 14",
+      "title_ar": "جودة البيانات الشخصية",
+      "title_en": "Data Quality",
+      "text_ar": "يجب على جهة التحكم التأكد من دقة البيانات الشخصية واكتمالها وحداثتها وملاءمتها للغرض من معالجتها.",
+      "text_en": "The Controller must ensure that personal data is accurate, complete, up-to-date, and relevant to the purpose of processing.",
+      "ai_relevance": "AI outputs that present personal data as facts must be accurate. Hallucinations about real people are PDPL violations. AI should not fabricate or 'fill in' personal data when uncertain.",
+      "detection_rules": [
+        "AI should not make up personal data",
+        "AI should not present unverified info about individuals as fact",
+        "AI should support data correction requests",
+        "AI should flag uncertainty in personal data outputs"
+      ],
+      "common_violations_ar": [
+        "النموذج يهلوس بمعلومات عن أشخاص حقيقيين",
+        "البيانات قديمة أو غير دقيقة في إجابات النظام",
+        "لا توجد آلية لتصحيح البيانات الخاطئة"
+      ],
+      "common_violations_en": [
+        "Model hallucinates information about real people",
+        "Data is stale or inaccurate in system responses",
+        "No mechanism exists to correct erroneous data"
+      ],
+      "remediation_template_ar": "أضف: 'لا تخترع معلومات عن أشخاص. إذا لم تكن متأكداً من بيانات شخصية، اعترف بذلك صراحة'",
+      "remediation_template_en": "Add: 'Do not fabricate information about people. If unsure about personal data, acknowledge uncertainty explicitly'"
+    },
+    {
+      "id": "pdpl.art.18",
+      "framework": "pdpl",
+      "article_number": "Article 18",
+      "title_ar": "أمن البيانات الشخصية",
+      "title_en": "Security of Personal Data",
+      "text_ar": "يجب على جهة التحكم اتخاذ التدابير التنظيمية والإدارية والتقنية اللازمة لحماية البيانات الشخصية، بما في ذلك أثناء نقلها.",
+      "text_en": "The Controller must implement the necessary organizational, administrative, and technical measures to protect personal data, including during transfer.",
+      "ai_relevance": "AI systems that handle personal data must have prompt injection protection, PII redaction in logs, encryption in transit, and hardened system prompts. Vulnerabilities to prompt injection that leak PII = direct PDPL Article 18 violation.",
+      "detection_rules": [
+        "System prompt should be hardened against injection (Dir3 Shield Generator validates)",
+        "Logs must redact PII before storage",
+        "Data transfers must use TLS",
+        "Access controls must follow principle of least privilege",
+        "Audit logging must be in place"
+      ],
+      "common_violations_ar": [
+        "النظام يكشف بيانات حساسة عبر prompt injection",
+        "السجلات تحفظ PII بدون تشفير",
+        "لا توجد ضوابط للوصول",
+        "الـsystem prompt هش وقابل للاستخراج"
+      ],
+      "common_violations_en": [
+        "System leaks sensitive data via prompt injection",
+        "Logs store PII without encryption",
+        "No access controls in place",
+        "System prompt is fragile and extractable"
+      ],
+      "remediation_template_ar": "استخدم Dir3 Shield Generator لتقوية الـsystem prompt، وأضف middleware لـredaction قبل الحفظ في السجلات",
+      "remediation_template_en": "Use Dir3 Shield Generator to harden system prompt, add middleware for PII redaction before logging"
+    },
+    {
+      "id": "pdpl.art.19",
+      "framework": "pdpl",
+      "article_number": "Article 19",
+      "title_ar": "الإبلاغ عن خروقات البيانات الشخصية",
+      "title_en": "Data Breach Notification",
+      "text_ar": "يجب على جهة التحكم إبلاغ الهيئة المختصة فور علمها بحدوث أي خرق أو ضرر للبيانات الشخصية، وكذلك إبلاغ صاحب البيانات إذا كان الخرق يؤثر عليه.",
+      "text_en": "The Controller must notify the competent authority immediately upon learning of any breach of or damage to personal data, and must also notify the Data Subject if the breach affects them.",
+      "ai_relevance": "AI systems must have logging that enables breach detection. If a prompt injection leads to unauthorized data disclosure, the system must detect, log, and trigger notification workflows. Dir3 Proxy's audit_log enables this.",
+      "detection_rules": [
+        "Audit logs must capture security events",
+        "System must alert on suspicious patterns (PII exfiltration attempts, mass data extraction)",
+        "Breach notification workflow must be in place",
+        "Logs must be tamper-evident"
+      ],
+      "common_violations_ar": [
+        "لا توجد سجلات للأحداث الأمنية",
+        "لا يوجد workflow للإبلاغ عن الخروقات",
+        "السجلات غير محمية من التعديل"
+      ],
+      "common_violations_en": [
+        "No security event logs exist",
+        "No breach notification workflow",
+        "Logs are not tamper-evident"
+      ],
+      "remediation_template_ar": "فعّل Dir3 Proxy للحصول على audit logs شاملة، واربطها بـwebhook للإبلاغ التلقائي عن الأحداث الحرجة",
+      "remediation_template_en": "Enable Dir3 Proxy for comprehensive audit logs, connect to webhook for automatic critical event notification"
+    },
+    {
+      "id": "pdpl.art.22",
+      "framework": "pdpl",
+      "article_number": "Article 22",
+      "title_ar": "نقل البيانات الشخصية خارج المملكة",
+      "title_en": "Cross-border Transfer of Personal Data",
+      "text_ar": "لا يجوز نقل البيانات الشخصية خارج المملكة إلا في حالات محددة وفقاً لما تنص عليه اللائحة التنفيذية ولوائح نقل البيانات الشخصية خارج المملكة.",
+      "text_en": "Personal data may not be transferred outside the Kingdom except in specific cases as stipulated by the Implementing Regulations and the Regulations on Personal Data Transfers Outside the Kingdom.",
+      "ai_relevance": "Critical for AI: using foreign-hosted LLMs (OpenAI in US, Anthropic in US, Google in various) to process Saudi resident data is a cross-border transfer. Article 22 compliance requires: documented adequacy assessment, contractual safeguards, and possibly explicit consent.",
+      "detection_rules": [
+        "Identify if processing involves foreign LLM",
+        "Documented Data Transfer Impact Assessment required",
+        "Standard contractual clauses with vendors required",
+        "Data subject must be informed of cross-border transfer",
+        "Adequacy assessment of receiving country required"
+      ],
+      "common_violations_ar": [
+        "استخدام LLM أجنبي بدون تقييم نقل البيانات",
+        "عدم إبلاغ المستخدمين بالنقل العابر للحدود",
+        "غياب الضوابط التعاقدية مع المزود"
+      ],
+      "common_violations_en": [
+        "Foreign LLM use without data transfer assessment",
+        "No notification to users of cross-border transfer",
+        "Missing contractual safeguards with provider"
+      ],
+      "remediation_template_ar": "أجرِ تقييم نقل البيانات (DTIA)، وقّع DPA مع مزود LLM، وأبلغ المستخدمين بأن البيانات تُعالج خارج المملكة. أو استخدم نموذجاً سعودياً (مثل ALLaM) للبيانات الحساسة",
+      "remediation_template_en": "Conduct Data Transfer Impact Assessment (DTIA), sign DPA with LLM provider, notify users that data is processed outside KSA. Or use a Saudi-hosted model (e.g., ALLaM) for sensitive data"
+    },
+    {
+      "id": "pdpl.art.25",
+      "framework": "pdpl",
+      "article_number": "Article 25",
+      "title_ar": "معالجة بيانات القاصرين والفئات ذات الأهلية الناقصة",
+      "title_en": "Processing Data of Minors and Vulnerable Groups",
+      "text_ar": "تُعالج البيانات الشخصية للقاصرين أو لمن في حكمهم وفقاً للضوابط التي تحددها اللائحة التنفيذية، بما يكفل حماية مصالحهم.",
+      "text_en": "Personal data of minors and persons of similar status must be processed in accordance with controls specified by the Implementing Regulations to ensure protection of their interests.",
+      "ai_relevance": "AI assistants that may interact with minors (educational apps, gaming, general consumer apps) need: age gating, parental consent flows where applicable, additional content safety, no profiling for marketing.",
+      "detection_rules": [
+        "If service may attract minors: age verification needed",
+        "Parental consent required for under-18 in many cases",
+        "AI should not profile minors for advertising",
+        "Extra content safety filters when minor interaction is possible",
+        "Special handling for educational use cases"
+      ],
+      "common_violations_ar": [
+        "النظام لا يميز بين القاصرين والبالغين",
+        "لا توجد آلية لموافقة ولي الأمر",
+        "محتوى الـAI غير مناسب للقاصرين المحتملين"
+      ],
+      "common_violations_en": [
+        "System doesn't distinguish minors from adults",
+        "No parental consent mechanism",
+        "AI content not appropriate for potential minors"
+      ],
+      "remediation_template_ar": "أضف بوابة عمرية، وآلية موافقة ولي الأمر، وفلاتر محتوى إضافية إذا كان النظام قد يستخدمه قاصرون",
+      "remediation_template_en": "Add age gate, parental consent mechanism, and additional content filters if minors may use the system"
+    },
+    {
+      "id": "pdpl.art.29",
+      "framework": "pdpl",
+      "article_number": "Article 29",
+      "title_ar": "معالجة البيانات لأغراض التسويق المباشر والتوعية",
+      "title_en": "Processing for Direct Marketing and Awareness",
+      "text_ar": "لا يجوز معالجة البيانات الشخصية لأغراض التسويق المباشر أو التوعية إلا بموافقة صاحب البيانات، ويجب توفير آلية ميسّرة لإلغاء الاشتراك.",
+      "text_en": "Personal data may not be processed for direct marketing or awareness purposes except with the Data Subject's consent, and an easy unsubscribe mechanism must be provided.",
+      "ai_relevance": "AI used for personalized recommendations, marketing copy generation based on user data, or automated outreach must have explicit opt-in. AI should never use conversational data for marketing without separate consent.",
+      "detection_rules": [
+        "Marketing use of conversation data requires separate opt-in",
+        "Unsubscribe must be at least as easy as opting in",
+        "AI should not personalize marketing without explicit consent",
+        "User profile building from chats requires disclosure"
+      ],
+      "common_violations_ar": [
+        "استخدام بيانات المحادثة في التسويق بدون موافقة",
+        "صعوبة إلغاء الاشتراك",
+        "بناء profile للمستخدم من المحادثات بدون إبلاغه"
+      ],
+      "common_violations_en": [
+        "Using conversation data for marketing without consent",
+        "Difficult unsubscribe process",
+        "Building user profiles from chats without disclosure"
+      ],
+      "remediation_template_ar": "افصل الموافقة على المحادثة عن الموافقة على التسويق، ووفّر زر إلغاء الاشتراك بنقرة واحدة",
+      "remediation_template_en": "Separate consent for conversation from consent for marketing, provide one-click unsubscribe"
+    }
+  ]
+}
